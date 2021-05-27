@@ -29,9 +29,9 @@ def list_questions(db: Session = Depends(get_db), skip: int = 0, limit: int = 10
     return questions
 
 @app.post("/questions", response_model=schemas.Question, status_code=HTTP_201_CREATED, tags=["Questions"])
-def create_question(*, db: Session = Depends(get_db), post_in: schemas.QuestionCreate) -> Any:
-    post = actions.question.create(db=db, obj_in=post_in)
-    return post
+def create_question(*, db: Session = Depends(get_db), question_in: schemas.QuestionCreate) -> Any:
+    question = actions.question.create(db=db, obj_in=question_in)
+    return question
 
 @app.delete(
     "/questions/{id}",
@@ -40,8 +40,8 @@ def create_question(*, db: Session = Depends(get_db), post_in: schemas.QuestionC
     tags=["Questions"],
 )
 def delete_post(*, db: Session = Depends(get_db), id: UUID4) -> Any:
-    post = actions.question.get(db=db, id=id)
-    if not post:
+    question = actions.question.get(db=db, id=id)
+    if not question:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Question not found")
-    post = actions.question.remove(db=db, id=id)
-    return post
+    question = actions.question.remove(db=db, id=id)
+    return question 
