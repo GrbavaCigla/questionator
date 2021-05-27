@@ -13,7 +13,7 @@ class AnswerCreate(AnswerBase):
 
 class AnswerInDBBase(AnswerBase):
     id: Optional[UUID4] = None
-    question_id: int
+    question_id: UUID4
 
     class Config:
         orm_mode = True
