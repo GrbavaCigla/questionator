@@ -7,8 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 if os.environ.get("DATABASE_URL"):
     # Heroku
-    uri = os.environ.get("DATABASE_URL")
-    uri = "postgresql" + uri[9:] 
+    uri = os.environ.get("DATABASE_URL").replace("postgres://", "postgresql://")
     engine = create_engine(uri, pool_pre_ping=True)
 else:
     from .config import settings
