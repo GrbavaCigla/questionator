@@ -7,9 +7,11 @@ class HTTPError(BaseModel):
 
 class AnswerBase(BaseModel):
     title: Optional[str] = None
+    author: Optional[str] = None
 
 class AnswerCreate(AnswerBase):
-    pass
+    title: str
+    author: str
 
 class AnswerInDBBase(AnswerBase):
     id: Optional[UUID4] = None
@@ -23,9 +25,11 @@ class Answer(AnswerInDBBase):
 
 class QuestionBase(BaseModel):
     title: Optional[str] = None
+    author: Optional[str] = None
 
 class QuestionCreate(QuestionBase):
     title: str
+    author: str
 
 class QuestionInDBBase(QuestionBase):
     id: Optional[UUID4] = None

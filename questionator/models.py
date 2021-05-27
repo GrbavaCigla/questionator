@@ -10,6 +10,7 @@ class Question(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid4)
     title = Column(String)
+    author = Column(String)
     answers = relationship("Answer", uselist=True, back_populates="question")
 
 class Answer(Base):
@@ -17,6 +18,7 @@ class Answer(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid4)
     title = Column(String)
+    author = Column(String)
 
     question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"))
     question = relationship("Question", back_populates="answers")

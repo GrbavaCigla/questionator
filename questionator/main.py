@@ -24,11 +24,12 @@ def get_db():
     finally:
         db.close()
 
+
 @app.get("/questions", response_model=List[schemas.Question], tags=["Questions"])
 def list_questions(db: Session = Depends(get_db), skip: int = 0, limit: int = 100) -> Any:
     questions = db.query(models.Question).offset(skip).limit(limit).all()
-    print(questions[0].answers[0].question_id)
     return questions
+
 
 @app.post("/questions", response_model=schemas.Question, status_code=HTTP_201_CREATED, tags=["Questions"])
 def create_question(*, db: Session = Depends(get_db), question_in: schemas.QuestionCreate) -> Any:
@@ -39,6 +40,7 @@ def create_question(*, db: Session = Depends(get_db), question_in: schemas.Quest
     db.refresh(db_obj)
     return db_obj
 
+
 @app.delete(
     "/questions/{id}",
     response_model=schemas.Question,
@@ -46,16 +48,29 @@ def create_question(*, db: Session = Depends(get_db), question_in: schemas.Quest
     tags=["Questions"],
 )
 def delete_post(*, db: Session = Depends(get_db), id: UUID4) -> Any:
-    question = db.query(models.Question).filter(models.Question.id == id).first()
+    question = db.query(models.Question).filter(
+        models.Question.id == id).first()
     if not question:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Question not found")
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND,
+                            detail="Question not found")
 
     obj = db.query(models.Question).get(id)
     db.delete(obj)
     db.commit()
-    return question 
+    return question
 
-@app.post("/questions/{id}/answers/")
+
+@app.get("/questions/{id}/answers", response_model=List[schemas.Answer], responses={HTTP_404_NOT_FOUND: {"model": schemas.HTTPError}}, tags=["Answers"])
+def list_answers(id: UUID4, db: Session = Depends(get_db), skip: int = 0, limit: int = 100) -> Any:
+    questions = db.query(models.Answer).filter(
+        models.Answer.question_id == id).offset(skip).limit(limit).all()
+    return questions
+
+
+@app.post(
+    "/questions/{id}/answers",
+    response_model=schemas.Answer,
+    tags=["Answers"], responses={HTTP_404_NOT_FOUND: {"model": schemas.HTTPError}})
 def create_answer(
     id: UUID4, answer_in: schemas.AnswerCreate, db: Session = Depends(get_db)
 ):
